@@ -6,7 +6,8 @@ Why use USV? Well, ASCII has a unit separator, which is unlikely to appear in
 your data. If you can avoid having fields which need quoting, you can parse it
 much more efficiently (typically 5x or more).
 
-This parser can also be used with TSV, for example:
+This parser can also be used with TSV, so long as the tab does not appear in
+the data, for example:
 
 ```go
 r := usv.NewReader(os.Stdin)
