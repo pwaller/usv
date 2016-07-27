@@ -53,7 +53,9 @@ func (r *Reader) ReadInto(buf *[][]byte) ([][]byte, error) {
 		}
 		if i >= cap(*buf) {
 			// Allocate.
-			*buf = append(*buf, []byte{})
+			for i >= len(*buf) {
+				*buf = append(*buf, []byte{})
+			}
 			return
 		}
 		// Reuse previously allocated.
