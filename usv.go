@@ -90,6 +90,28 @@ func NewReader(r io.Reader) *Reader {
 	}
 }
 
+// TSV makes Reader read TSV files.
+func (r *Reader) TSV() *Reader {
+	r.RecordSeparator = '\n'
+	r.UnitSeparator = '\t'
+	return r
+}
+
+// CSV makes Reader read simple (no spacing, no quoting) CSV files.
+func (r *Reader) CSV() *Reader {
+	r.RecordSeparator = '\n'
+	r.UnitSeparator = ','
+	return r
+}
+
+func (r *Reader) Skip(n int) *Reader {
+	for i := 0; i < n; i++ {
+		// The error can be raised later.
+		_, _ = r.Read()
+	}
+	return r
+}
+
 func ensureBuffered(r io.Reader) *bufio.Reader {
 	if bufR, ok := r.(*bufio.Reader); ok {
 		return bufR
