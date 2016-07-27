@@ -28,31 +28,36 @@ type Reader struct {
 	records [][]byte
 }
 
-// Next reads one line of a CSV into bss.
+// Read reads one line of a CSV into bss.
 func (r *Reader) Read() ([][]byte, error) {
+	return r.ReadInto(&r.records)
+}
+
+// ReadInto reads the next line into buf without allocating.
+func (r *Reader) ReadInto(buf *[][]byte) ([][]byte, error) {
 	line, err := r.r.ReadSlice(r.RecordSeparator)
 	if err != nil {
 		return nil, err
 	}
 	if len(r.records) > 0 {
-		reset(&r.records)
+		reset(buf)
 	}
 
 	line = line[:len(line)-1] // Remove record separator
 
 	// Allocate storage for column 'i' if it doesn't already have it.
 	ensureCol := func(i int) {
-		if i < len(r.records) {
-			// r.records is wide enough.
+		if i < len(*buf) {
+			// *buf is wide enough.
 			return
 		}
-		if i >= cap(r.records) {
+		if i >= cap(*buf) {
 			// Allocate.
-			r.records = append(r.records, []byte{})
+			*buf = append(*buf, []byte{})
 			return
 		}
 		// Reuse previously allocated.
-		r.records = r.records[:i+1]
+		*buf = (*buf)[:i+1]
 	}
 
 	col := 0
@@ -62,9 +67,9 @@ func (r *Reader) Read() ([][]byte, error) {
 			continue
 		}
 		ensureCol(col)
-		r.records[col] = append(r.records[col], b)
+		(*buf)[col] = append((*buf)[col], b)
 	}
-	return r.records, nil
+	return *buf, nil
 
 }
 
