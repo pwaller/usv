@@ -63,12 +63,13 @@ func (r *Reader) ReadInto(buf *[][]byte) ([][]byte, error) {
 	}
 
 	col := 0
+	ensureCol(col)
 	for _, b := range line {
 		if b == r.UnitSeparator {
 			col++
+			ensureCol(col)
 			continue
 		}
-		ensureCol(col)
 		(*buf)[col] = append((*buf)[col], b)
 	}
 	return *buf, nil
@@ -106,6 +107,7 @@ func (r *Reader) CSV() *Reader {
 	return r
 }
 
+// Skip n rows of input.
 func (r *Reader) Skip(n int) *Reader {
 	for i := 0; i < n; i++ {
 		// The error can be raised later.
