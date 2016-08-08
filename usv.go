@@ -33,6 +33,17 @@ func (r *Reader) Read() ([][]byte, error) {
 	return r.ReadInto(&r.records)
 }
 
+// ReadString reads one line of CSV, allocating for convenience.
+// Use Read or ReadInto to avoid allocating.
+func (r *Reader) ReadString() ([]string, error) {
+	var result []string
+	row, err := r.Read()
+	for _, cell := range row {
+		result = append(result, string(cell))
+	}
+	return result, err
+}
+
 // ReadInto reads the next line into buf without allocating.
 func (r *Reader) ReadInto(buf *[][]byte) ([][]byte, error) {
 	line, err := r.r.ReadSlice(r.RecordSeparator)
