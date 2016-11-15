@@ -55,6 +55,9 @@ func (r *Reader) ReadInto(buf *[][]byte) ([][]byte, error) {
 	}
 
 	line = line[:len(line)-1] // Remove record separator
+	if r.RecordSeparator == '\n' && line[len(line)-1] == '\r' {
+		line = line[:len(line)-1] // Remove carriage return, if present.
+	}
 
 	// Allocate storage for column 'i' if it doesn't already have it.
 	ensureCol := func(i int) {
