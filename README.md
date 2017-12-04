@@ -1,3 +1,7 @@
+# NOTICE: do not use this
+
+[Recent versions of Go (>=1.9)](https://github.com/golang/go/commit/2181653be637cdcc7a6efee8ec0a719df1d83c00) now have [(encoding/csv.Reader).ReuseRecord](https://tip.golang.org/pkg/encoding/csv/#Reader.ReuseRecord) which causes far fewer allocations. This makes USV less of a win than it used to be (maybe 1-2x, rather than 5x), and I would advise using the vanilla reader if possible.
+
 # USV: A parser for Unit Separator separated values
 
 An efficient (zero-alloc) parser for CSV-like data.
